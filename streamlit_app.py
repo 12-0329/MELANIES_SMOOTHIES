@@ -14,10 +14,11 @@ cnx = st.connection("snowflake")
 session = cnx.session()
 
 # Access the fruit options table
-my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME')).to_pandas()
+my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME')),col('search on')
 
 # Display the dataframe (optional)
-# st.dataframe(data=my_dataframe, use_container_width=True)
+st.dataframe(data=my_dataframe, use_container_width=True)
+st.stop()
 
 # Create a multiselect widget
 ingredients_list = st.multiselect(
