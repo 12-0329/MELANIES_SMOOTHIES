@@ -24,7 +24,7 @@ ingredients_list = st.multiselect(
     'Choose up to 5 ingredients:', my_dataframe['FRUIT_NAME'].tolist(),max_selections=5
 )
 
-if ingredient_list:
+if ingredients_list:
     ingredients_string = ''
 
     for fruit_chosen in ingredients_list:
