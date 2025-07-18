@@ -24,46 +24,11 @@ ingredients_list = st.multiselect(
     'Choose up to 5 ingredients:', my_dataframe['FRUIT_NAME'].tolist(),max_selections=5
 )
 
-if ingredients_list:
-    # Join the selected ingredients into a string
-    ingredients_string = ', '.join(ingredients_list)
-    submitted = st.button('Submit')
-    if submitted:
-        st.success("Your smoothie is ordered!")
-        # Display the selected ingredients
-        st.write("Selected ingredients:", ingredients_string)
+if ingredient_list:
+    ingredients_string = ''
 
-        # Create the SQL insert statement with proper escaping
-        my_insert_stmt = f"INSERT INTO smoothies.public.orders(name_on_order, ingredients) VALUES ('{name_on_order}', '{ingredients_string}')"
-
-        # Execute the SQL insert statement
-        session.sql(my_insert_stmt).collect()
-
-        # Display the SQL insert statement
-        st.write("SQL insert statement executed:", my_insert_stmt)
-
-st.stop()
-
-import streamlit as st
-import requests
-import pandas as pd
-
-# Fetch data from the API
-smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
-
-# Check if the request was successful
-if smoothiefroot_response.status_code == 200:
-    data = smoothiefroot_response.json()
-    
-    # If the data is a dictionary or list of dictionaries, convert to DataFrame
-    if isinstance(data, dict):
-        df = pd.DataFrame([data])
-    elif isinstance(data, list):
-        df = pd.DataFrame(data)
-    else:
-        st.error("Unexpected data format received from API.")
-    
-    # Display the DataFrame
-    st.dataframe(data=df, use_container_width=True)
-else:
-    st.error(f"Failed to fetch data: {smoothiefroot_response.status_code}")
+    for fruit_chosen in ingredients_list:
+        ingredients_string += fruit_chosen + ' '
+        st.subheader(fruit_chosen + ' Nutrition Information')
+        smoothiefroot_response = requests.get("https://my.smooothiefroot.com/api/fruit/" + fruit_chosen)
+        sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
