@@ -44,7 +44,26 @@ if ingredients_list:
 
 st.stop()
 
+import streamlit as st
 import requests
+import pandas as pd
+
+# Fetch data from the API
 smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
-# st.text(smoothiefroot_response).json()
-sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True
+
+# Check if the request was successful
+if smoothiefroot_response.status_code == 200:
+    data = smoothiefroot_response.json()
+    
+    # If the data is a dictionary or list of dictionaries, convert to DataFrame
+    if isinstance(data, dict):
+        df = pd.DataFrame([data])
+    elif isinstance(data, list):
+        df = pd.DataFrame(data)
+    else:
+        st.error("Unexpected data format received from API.")
+    
+    # Display the DataFrame
+    st.dataframe(data=df, use_container_width=True)
+else:
+    st.error(f"Failed to fetch data: {smoothiefroot_response.status_code}")
